@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cars</title>
+</head>
+<body>
+<form method="get" action="/add">
+    <label>
+        <input name="model"/>
+        model
+    </label><br/>
+    <label>
+        <input type="number" name="doors"/>
+        number
+    </label><br/>
+    <label>
+        <input type="checkbox" name="damaged">
+        uszkodzony?
+    </label><br/>
+    <label>
+        <input type="radio" name="country" value="PL">
+        polski
+    </label><br/>
+    <label>
+        <input type="radio" name="country" value="ENG">
+        angielski
+    </label><br/>
+    <input type="submit">
+</form>
+<a href="/text">text</a>
+<a href="/json">json</a>
+<a href="/html">html</a>
+</body>
+</html>
