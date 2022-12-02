@@ -8,31 +8,49 @@
     <title>Cars</title>
 </head>
 <body>
-<form method="get" action="/add">
+<div method="post" action="/add">
     <label>
-        <input name="model"/>
+        <input id="model"/>
         model
     </label><br/>
     <label>
-        <input type="number" name="doors"/>
-        number
+        <input type="number" id="year"/>
+        rok
     </label><br/>
     <label>
-        <input type="checkbox" name="damaged">
-        uszkodzony?
+        <input type="checkbox" id="poduszka1">
+        <input type="checkbox" id="poduszka2">
+        <input type="checkbox" id="poduszka3">
+        <input type="checkbox" id="poduszka4">
+        poduszki: kierowca | paszażer | tylna kanapa | boczne z tyłu
     </label><br/>
     <label>
-        <input type="radio" name="country" value="PL">
-        polski
+        <input type="color" id="color">
+        kolor
     </label><br/>
-    <label>
-        <input type="radio" name="country" value="ENG">
-        angielski
-    </label><br/>
-    <input type="submit">
-</form>
+    <input type="submit" onclick="handlePost()">
+</div>
 <a href="/text">text</a>
 <a href="/json">json</a>
 <a href="/html">html</a>
 </body>
+<script>
+    const ids = ["model", "year", "color"]
+
+    function handlePost() {
+        const body = {}
+        ids.forEach(id=>{
+            const el = document.getElementById(id)
+            body[id] = el.value
+        })
+        body.airbags = [
+            {airbagType:"kierowca", value: document.getElementById("poduszka1").checked},
+            {airbagType:"pasażer", value: document.getElementById("poduszka2").checked},
+            {airbagType:"kanapa", value: document.getElementById("poduszka3").checked},
+            {airbagType:"boczne", value: document.getElementById("poduszka4").checked},
+        ]
+        console.log(body)
+        fetch("/add",{method:"POST",body:JSON.stringify(body)})
+    }
+</script>
 </html>
