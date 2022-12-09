@@ -14,7 +14,7 @@
         model
     </label><br/>
     <label>
-        <input type="number" id="year"/>
+        <input type="number" id="year" value="0"/>
         rok
     </label><br/>
     <label>
@@ -32,7 +32,7 @@
 </div>
 <a href="/text">text</a>
 <a href="/json">json</a>
-<a href="/html">html</a>
+<a href="/cars.html">cars</a>
 </body>
 <script>
     const ids = ["model", "year", "color"]
@@ -44,13 +44,17 @@
             body[id] = el.value
         })
         body.airbags = [
-            {airbagType:"kierowca", value: document.getElementById("poduszka1").checked},
-            {airbagType:"pasażer", value: document.getElementById("poduszka2").checked},
-            {airbagType:"kanapa", value: document.getElementById("poduszka3").checked},
-            {airbagType:"boczne", value: document.getElementById("poduszka4").checked},
+            {airbagType:"kierowca", active: document.getElementById("poduszka1").checked},
+            {airbagType:"pasażer", active: document.getElementById("poduszka2").checked},
+            {airbagType:"kanapa", active: document.getElementById("poduszka3").checked},
+            {airbagType:"boczne", active: document.getElementById("poduszka4").checked},
         ]
         console.log(body)
         fetch("/add",{method:"POST",body:JSON.stringify(body)})
+            .then(r=>r.json())
+            .then(json=>{
+                alert(JSON.stringify(json, null, 4))
+            })
     }
 </script>
 </html>

@@ -16,10 +16,28 @@ public class Car {
         this.color = color;
     }
 
-    private final UUID uuid;
+    public void generateUUID() {
+        this.uuid = Generators.randomBasedGenerator().generate();
+    }
+
+    private UUID uuid;
     private String model;
     private Integer year;
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
     private ArrayList<Airbag> airbags;
     private String color;
 
 }
+
