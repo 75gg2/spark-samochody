@@ -1,4 +1,4 @@
-package Car;
+package CarModel;
 
 import java.util.Objects;
 

@@ -1,7 +1,5 @@
-package Car;
+package CarModel;
 
-
-import com.sun.tools.jconsole.JConsoleContext;
 
 import java.util.Objects;
 

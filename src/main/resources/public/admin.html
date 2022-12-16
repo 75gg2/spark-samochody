@@ -11,6 +11,7 @@
 <div>
 
     <table id="table"></table>
+    <button onclick="generate()">Generuj 40 testowych</button>
     <div id="form" style="display:none">
     </div>
 </div>
@@ -19,6 +20,9 @@
 <a href="/cars.html">cars</a>
 </body>
 <script>
+    function generate(){
+        fetch("/generate").then()
+    }
     function edit(uuid) {
         const form = document.getElementById("form")
         fetch("/findOne?uuid=" + uuid)
@@ -42,8 +46,10 @@
     }
 
     window.onload = () => {
+refresh()
+    }
+    function refresh(){
         const table = document.getElementById("table")
-
         fetch("/json")
             .then(r => r.json())
             .then(json => {
@@ -55,7 +61,8 @@
                         <td>${e.model}</td>
                         <td>${e.year}</td>
                         <td>${e.airbags.map(a => `${a.airbagType}: ${a.active}\n`)}</td>
-                        <td>${e.color}</td>
+                        <td><div style="background-color: ${e.color}; width: 15px; height: 15px"></div></td>
+                        <td>${!e.invoice?`<button onClick="fetch('/invoice?uuid=${e.uuid}').then(refresh)">generuj fakturę</button>`:`<a href="${e.invoice}">pobierz fakturę</a>`}</td>
                         <td><button onClick="edit('${e.uuid}')">Edytuj</button></td>
                     `
                     table.appendChild(tr)
