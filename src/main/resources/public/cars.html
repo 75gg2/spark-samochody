@@ -22,6 +22,7 @@
         fetch("/findOne?uuid=" + uuid)
             .then(r => r.json())
             .then(json => {
+                form.style.display = "block"
                 form.innerHTML = `
             <label>
                 <input id="model" value="${json.model}"/>
@@ -33,7 +34,7 @@
             rok
         </label>
         <br/>
-        <input type="submit" onClick="handlePost(${uuid})">`
+        <input type="submit" onClick="handlePost('${uuid}')">`
             })
 
     }
@@ -64,13 +65,14 @@
     const ids = ["model", "year"]
 
     function handlePost(uuid) {
+        console.log(uuid)
         const body = {}
         ids.forEach(id => {
             const el = document.getElementById(id)
             body[id] = el.value
         })
         console.log(body)
-        fetch("/update?uuid" +uuid, {method: "POST", body: JSON.stringify(body)})
+        fetch("/update?uuid=" +uuid, {method: "PUT", body: JSON.stringify(body)})
             .then(r => r.json())
             .then(json => {
                 alert(JSON.stringify(json, null, 4))
