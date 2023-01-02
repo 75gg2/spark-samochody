@@ -16,6 +16,15 @@ public class Car {
         this.airbags = airbags;
         this.color = color;
     }
+    public String invoice = "";
+
+    public String getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(String invoice) {
+        this.invoice = invoice;
+    }
 
     public void generateUUID() {
         this.uuid = Generators.randomBasedGenerator().generate();

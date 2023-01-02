@@ -4,6 +4,7 @@ import CarModel.CarUpdate;
 import com.google.gson.Gson;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
 import spark.Request;
 import spark.Response;
@@ -11,6 +12,11 @@ import spark.Response;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
@@ -34,12 +40,22 @@ class App {
         get("/json", app::json);
         get("/findOne", app::findOne);
         get("/invoice", app::invoice);
+        get("/faktury/:id", app::downloadInvoice);
         put("/update", app::update);
         get("/generate", app::generate);
         get("/deleteAll", App::testFunction);
         get("/delete/:id", App::testFunction);
         get("/update/:id", App::testFunction);
 
+    }
+
+    private Object downloadInvoice(Request request, Response response) throws IOException {
+        response.type("application/octet-stream"); //
+        response.header("Content-Disposition", "attachment; filename=plik.pdf"); // nagłówek
+        String id = request.params("id");
+        OutputStream outputStream = response.raw().getOutputStream();
+        outputStream.write(Files.readAllBytes(Path.of("faktury/"+id)));
+        return outputStream;
     }
 
     private Object invoice(Request request, Response response) {
@@ -50,22 +66,29 @@ class App {
             Car car = carOptional.get();
             try {
                 Document document = new Document();
-                String path = String.format("bbb%s.pdf", car.getUuid());
+                String path = String.format("faktury/%s.pdf", car.getUuid());
                 PdfWriter.getInstance(document, new FileOutputStream(path));
                 document.open();
-                Color color = Color.getColor(car.getColor());
+                String hexColor = car.getColor();
+                int r = Integer.valueOf(hexColor.substring(1, 3), 16);
+                int g = Integer.valueOf(hexColor.substring(3, 5), 16);
+                int b = Integer.valueOf(hexColor.substring(5, 7), 16);
                 Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
                 Font fontBig = FontFactory.getFont(FontFactory.COURIER, 24, BaseColor.BLACK);
                 Font fontSmall = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.BLACK);
-                Font fontSmallColored = FontFactory.getFont(FontFactory.COURIER, 8, new BaseColor(color.getRGB()));
+                Font fontSmallColored = FontFactory.getFont(FontFactory.COURIER, 8, 2,new BaseColor(r,g,b));
+                Image img = Image.getInstance("dodge2.jpg");
                 Chunk chunk = new Chunk("tekst", font);
                 document.add( new Paragraph("FAKTURA dla "+car.getUuid(), font));
                 document.add( new Paragraph("Model: "+car.getModel(), fontBig));
                 document.add( new Paragraph("kolor: "+car.getColor(), fontSmallColored));
-                document.add( new Paragraph("rok: "+car.getYear(), fontSmallColored));
+                document.add( new Paragraph("rok: "+car.getYear(), fontSmall));
                 document.add(chunk);
+                document.add(img);
                 document.close();
-            } catch (DocumentException | FileNotFoundException e) {
+                car.setInvoice(path);
+                return path;
+            } catch (DocumentException | IOException e) {
                 throw new RuntimeException(e);
             }
         }

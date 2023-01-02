@@ -1,0 +1,51 @@
+body {
+    padding-top: 100px;
+    margin: 0;
+    background-color: bisque;
+    font-family: sans-serif;
+}
+td{
+    padding: 10px;
+}
+td,tr,table,tbody{
+    border-collapse: collapse;
+    border-right: 3px dotted gray;
+}
+.menu-left{
+    top:98px;
+    left:0;
+    width: 300px;
+    position: fixed;
+    background-color: #c3ffea;
+    height: calc(100vh - 100px);
+    border-right:8px dashed black ;
+}
+.table-right{
+    margin-left: 315px;
+}
+.menu {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    position: fixed;
+    top:0;
+    width: 100vw;
+    background-color: aquamarine;
+    padding: 10px;
+    height: 70px;
+    border-bottom: 8px dashed black;
+}
+button, a{
+    font-size: 15px;
+    background-color: darkcyan;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin:0  10px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover, a:hover{
+    transform: scale(1.2);
+}

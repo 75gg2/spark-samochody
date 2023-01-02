@@ -21,7 +21,7 @@
 </body>
 <script>
     function generate(){
-        fetch("/generate").then()
+        fetch("/generate").then(refresh)
     }
     function edit(uuid) {
         const form = document.getElementById("form")
@@ -49,7 +49,9 @@
 refresh()
     }
     function refresh(){
+        console.log("123")
         const table = document.getElementById("table")
+        table.innerText=""
         fetch("/json")
             .then(r => r.json())
             .then(json => {
@@ -62,7 +64,7 @@ refresh()
                         <td>${e.year}</td>
                         <td>${e.airbags.map(a => `${a.airbagType}: ${a.active}\n`)}</td>
                         <td><div style="background-color: ${e.color}; width: 15px; height: 15px"></div></td>
-                        <td>${e.invoice?`<button onClick="fetch('/invoice?uuid=${e.uuid}').then(refresh)">generuj fakturę</button>`:`<a href="${e.invoice}">pobierz fakturę</a>`}</td>
+                        <td>${!e.invoice?`<button onClick="fetch('/invoice?uuid=${e.uuid}').then(refresh)">generuj fakturę</button>`:`<a href="${e.invoice}">pobierz fakturę</a>`}</td>
                         <td><button onClick="edit('${e.uuid}')">Edytuj</button></td>
                     `
                     table.appendChild(tr)
