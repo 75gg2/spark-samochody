@@ -1,6 +1,8 @@
 import CarModel.Airbag;
 import CarModel.Car;
 import CarModel.CarUpdate;
+import Utils.Helpers;
+import Utils.Invoice;
 import com.google.gson.Gson;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
@@ -19,12 +21,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
 import static spark.Spark.*;
 
 class App {
     ArrayList<Car> cars = new ArrayList<>();
+    ArrayList<String> invoicesByYear = new ArrayList<>();
     Gson gson = new Gson();
 
     static String testFunction(Request req, Response res) {
@@ -39,7 +44,9 @@ class App {
         post("/add", app::addPost);
         get("/json", app::json);
         get("/findOne", app::findOne);
-        get("/invoice", app::invoice);
+        post("/invoiceByYear", app::invoiceByYear);
+        post("/invoiceByPrice", app::invoiceByPrice);
+        get("/invoicesFilter",app::getInvoiceFilter);
         get("/faktury/:id", app::downloadInvoice);
         put("/update", app::update);
         get("/generate", app::generate);
@@ -47,6 +54,24 @@ class App {
         get("/delete/:id", App::testFunction);
         get("/update/:id", App::testFunction);
 
+    }
+
+    private Object getInvoiceFilter(Request request, Response response) {
+        return gson.toJson(new ArrayList[]{invoicesByYear});
+    }
+
+    private Object invoiceByYear(Request request, Response response) {
+        int year = Integer.parseInt(request.queryParams("year"));
+        String title = "Faktura dla roku "+ year;
+        ArrayList<Car> auta = cars.stream().filter(car -> car.getYear() == year).collect(Collectors.toCollection(ArrayList::new));
+        invoicesByYear.add(new Invoice(title,"nabywca","kupiec", auta).generate());
+        return true;
+    }
+
+    private Object invoiceByPrice(Request request, Response response) {
+        int price1 = Integer.parseInt(request.queryParams("price1"));
+        int price2 = Integer.parseInt(request.queryParams("price2"));
+        return null;
     }
 
     private Object downloadInvoice(Request request, Response response) throws IOException {
@@ -99,7 +124,7 @@ class App {
         String[] models = {"Toyota", "Mercedes", "BMW", "Volkswagen", "Skoda"};
         for (int i = 0; i < 40; i++) {
             cars.add(new Car(getRandom(models),
-                    new Random().nextInt(),
+                    Helpers.randomYear(),
                     new ArrayList<Airbag>(
                             List.of(new Airbag("kierowca", new Random().nextBoolean()),
                                     new Airbag("pasażer", new Random().nextBoolean()),

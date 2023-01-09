@@ -1,5 +1,6 @@
 package CarModel;
 
+import Utils.Helpers;
 import com.fasterxml.uuid.Generators;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import static java.lang.Integer.parseInt;
 public class Car {
 
     public Car(String model, Integer year, ArrayList<Airbag> airbags, String color) {
-        this.uuid = Generators.randomBasedGenerator().generate();
+        this.uuid = Helpers.randomUUID();
         this.model = model;
         this.year = year;
         this.airbags = airbags;

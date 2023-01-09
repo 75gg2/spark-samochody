@@ -18,7 +18,14 @@
 </div>
 <div class="menu-left">
     <button onclick="generate()">Generuj 40 testowych</button>
-    <button onclick="generate()">Generuj 40 testowych</button>
+    <hr style="padding: 0"/>
+    <button onclick="yearInvoiceFilter()">faktura - wszystkie auta z danego rocznika</button>
+    <input type="text" id="yearInvoiceFilter">
+    <div class="flex"id="yearInvoiceFiltered"></div>
+    <hr style="padding: 0"/>
+    <button onclick="priceInvoiceFilter()">faktura - wszystkie auta z zakresu cen</button>
+    <input type="text" id="priceInvoiceFilter1">
+    <input type="text" id="priceInvoiceFilter2">
 </div>
 <table id="table" class="table-right"></table>
 </body>
@@ -52,6 +59,7 @@
 refresh()
     }
     function refresh(){
+        refreshInvoicesLinks()
         console.log("123")
         const table = document.getElementById("table")
         table.innerText=""
@@ -93,4 +101,5 @@ refresh()
             })
     }
 </script>
+<script src="admin.js"></script>
 </html>

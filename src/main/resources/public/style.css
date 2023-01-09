@@ -11,14 +11,25 @@ td,tr,table,tbody{
     border-collapse: collapse;
     border-right: 3px dotted gray;
 }
+.flex{
+    display: flex;
+    flex-direction: column;
+}
 .menu-left{
     top:98px;
     left:0;
     width: 300px;
     position: fixed;
+    padding-top: 30px;
     background-color: #c3ffea;
     height: calc(100vh - 100px);
     border-right:8px dashed black ;
+    display: flex;
+    flex-direction: column;
+}
+.menu-left > *{
+    margin: 10px 30px;
+    padding: 10px;
 }
 .table-right{
     margin-left: 315px;
