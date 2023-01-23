@@ -11,11 +11,11 @@ import com.itextpdf.text.pdf.PdfWriter;
 import spark.Request;
 import spark.Response;
 
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
+import javax.servlet.http.Part;
 import java.awt.*;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,14 +46,50 @@ class App {
         get("/findOne", app::findOne);
         post("/invoiceByYear", app::invoiceByYear);
         post("/invoiceByPrice", app::invoiceByPrice);
-        get("/invoicesFilter",app::getInvoiceFilter);
+        get("/invoicesFilter", app::getInvoiceFilter);
         get("/faktury/:id", app::downloadInvoice);
         put("/update", app::update);
         get("/generate", app::generate);
         get("/deleteAll", App::testFunction);
         get("/delete/:id", App::testFunction);
         get("/update/:id", App::testFunction);
+        get("/thumb", app::thumb);
+        post("/uploadPhoto", app::uploadPhoto);
 
+    }
+
+    private Object thumb(Request request, Response res) throws IOException {
+        String id = "images/"+request.queryParams("name");
+        File file = new File("path_on_server");
+        res.type("image/jpeg");
+
+        OutputStream outputStream = null;
+        outputStream = res.raw().getOutputStream();
+
+        outputStream.write(Files.readAllBytes(Path.of(id)));
+        outputStream.flush();
+        return outputStream;
+    }
+
+    private Object uploadPhoto(Request request, Response response) throws ServletException, IOException {
+        request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/images"));
+        System.out.println("plików jest: " + request.raw().getParts().size());
+        System.out.println("parts " + request.raw().getParts());
+        ArrayList<String> nazwy = new ArrayList<>();
+        for (Part p : request.raw().getParts()) {
+            System.out.println(p);
+            System.out.println(p.getInputStream());
+            InputStream inputStream = p.getInputStream();
+            // inputstream to byte
+            byte[] bytes = inputStream.readAllBytes();
+            String fileName = Helpers.randomUUID()+".jpg";
+            FileOutputStream fos = new FileOutputStream("images/" + fileName);
+            fos.write(bytes);
+            fos.close();
+            nazwy.add(fileName);
+            // dodaj do Arraylist z nazwami aut do odesłania do przeglądarki
+        }
+        return gson.toJson(nazwy);
     }
 
     private Object getInvoiceFilter(Request request, Response response) {
@@ -62,9 +98,9 @@ class App {
 
     private Object invoiceByYear(Request request, Response response) {
         int year = Integer.parseInt(request.queryParams("year"));
-        String title = "Faktura dla roku "+ year;
+        String title = "Faktura dla roku " + year;
         ArrayList<Car> auta = cars.stream().filter(car -> car.getYear() == year).collect(Collectors.toCollection(ArrayList::new));
-        invoicesByYear.add(new Invoice(title,"nabywca","kupiec", auta).generate());
+        invoicesByYear.add(new Invoice(title, "nabywca", "kupiec", auta).generate());
         return true;
     }
 
@@ -79,7 +115,7 @@ class App {
         response.header("Content-Disposition", "attachment; filename=plik.pdf"); // nagłówek
         String id = request.params("id");
         OutputStream outputStream = response.raw().getOutputStream();
-        outputStream.write(Files.readAllBytes(Path.of("faktury/"+id)));
+        outputStream.write(Files.readAllBytes(Path.of("faktury/" + id)));
         return outputStream;
     }
 
@@ -101,13 +137,13 @@ class App {
                 Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
                 Font fontBig = FontFactory.getFont(FontFactory.COURIER, 24, BaseColor.BLACK);
                 Font fontSmall = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.BLACK);
-                Font fontSmallColored = FontFactory.getFont(FontFactory.COURIER, 8, 2,new BaseColor(r,g,b));
+                Font fontSmallColored = FontFactory.getFont(FontFactory.COURIER, 8, 2, new BaseColor(r, g, b));
                 Image img = Image.getInstance("dodge2.jpg");
                 Chunk chunk = new Chunk("tekst", font);
-                document.add( new Paragraph("FAKTURA dla "+car.getUuid(), font));
-                document.add( new Paragraph("Model: "+car.getModel(), fontBig));
-                document.add( new Paragraph("kolor: "+car.getColor(), fontSmallColored));
-                document.add( new Paragraph("rok: "+car.getYear(), fontSmall));
+                document.add(new Paragraph("FAKTURA dla " + car.getUuid(), font));
+                document.add(new Paragraph("Model: " + car.getModel(), fontBig));
+                document.add(new Paragraph("kolor: " + car.getColor(), fontSmallColored));
+                document.add(new Paragraph("rok: " + car.getYear(), fontSmall));
                 document.add(chunk);
                 document.add(img);
                 document.close();

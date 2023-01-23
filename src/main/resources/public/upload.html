@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cars</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #div {
+            width: 80%;
+            min-height: 60vh;
+            margin: 10% 10% 0;
+            border-radius: 50px;
+
+            border: 5px dashed #245a79;
+        }
+    </style>
+</head>
+<body>
+<div class="menu">
+    <div id="form" style="display:none">
+    </div>
+    <a href="/index.html">index</a>
+    <a href="/admin.html">admin.html</a>
+    <a href="/cars.html">cars</a>
+</div>
+<div class="menu-left">
+    <button onclick="save()">Save images</button>
+
+</div>
+<div class="table-right">
+    <div id="div"></div>
+
+</div>
+<!--<table id="table" class="table-right"></table>-->
+</body>
+<script>
+    document.querySelector("html").ondragover = function (e) {
+        console.log("dragover nad dokumentem html")
+        e.preventDefault(); // usuwa domyślne zachowanie strony po wykonaniu zdarzenia, warto zakomentować i sprawdzić
+        e.stopPropagation(); // zatrzymuje dalszą propagację zdarzenia, warto zakomentować i sprawdzić
+    }
+
+    document.querySelector("html").ondrop = function (e) {
+        console.log("drop na dokumencie html")
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    document.querySelector("#div").ondragenter = function (e) {
+        console.log("drag enter na divie")
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    document.querySelector("#div").ondragover = function (e) {
+        console.log("drag over na divie")
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    document.querySelector("#div").ondragleave = function (e) {
+        console.log("dragleave na divie")
+        e.stopPropagation();
+        e.preventDefault();
+
+    }
+    document.querySelector("#div").ondrop = function (e) {
+
+        console.log("drop na divie")
+        e.stopPropagation();
+        e.preventDefault();
+
+        const files = e.dataTransfer.files;
+        console.log(files)
+
+        // teraz utwórz obiekt FormData zastępujący formularz
+        // oraz dodaj do niego po kolei wszystkie pliki z powyższej listy files
+        // na koniec użyj fetcha do uploadu plików
+
+        const fd = new FormData();
+
+        console.log(files.length)
+        for (let i = 0; i < files.length; i++) {
+            fd.append('file', files[i]);
+        }
+
+        console.log(fd)
+        const body = fd
+
+        fetch("/uploadPhoto", { method: "post", body })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                data.forEach(e=>
+                document.querySelector("#div").innerHTML += `
+                <img alt="${e}" src="thumb?name=${e}"/>
+                `
+                )
+            })
+            .catch(error => console.log(error)) // ew błąd
+
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const uuid = urlParams.get("uuid");
+
+    function save() {
+    }
+</script>
+<script src="admin.js"></script>
+</html>

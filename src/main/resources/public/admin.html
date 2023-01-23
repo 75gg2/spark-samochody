@@ -30,6 +30,8 @@
 <table id="table" class="table-right"></table>
 </body>
 <script>
+
+
     function generate(){
         fetch("/generate").then(refresh)
     }
@@ -77,6 +79,8 @@ refresh()
                         <td><div style="background-color: ${e.color}; width: 15px; height: 15px"></div></td>
                         <td>${!e.invoice?`<button onClick="fetch('/invoice?uuid=${e.uuid}').then(refresh)">generuj fakturę</button>`:`<a href="${e.invoice}">pobierz fakturę</a>`}</td>
                         <td><button onClick="edit('${e.uuid}')">Edytuj</button></td>
+                        <td><a href="./upload.html?uuid=${e.uuid}">upload</a></td>
+                        <td><a href="./gallery.html?uuid=${e.uuid}">gallery</a></td>
                     `
                     table.appendChild(tr)
 
