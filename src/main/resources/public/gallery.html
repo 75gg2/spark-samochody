@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cars</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #div {
+            margin: 10% 10% 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            padding: 20px;
+        }
+        .photo {
+            width: calc(25% - 40px);
+            margin: 20px;
+            z-index: inherit;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .photo img{
+            max-width: 100%;
+            z-index: 98;
+        }
+
+        .photo> div{
+            cursor: pointer;
+            border-radius: 40px;
+            position: absolute;
+            z-index: 99;
+            left: -5px;
+            top: -27px;
+            background-color: black;
+            color: white;
+            padding: 30px 5px 30px 10px;
+            font-size:15px;
+            transform: rotate(45deg);
+        }
+        .photo >div>div{
+            transform: rotate(-45deg);
+        }
+    </style>
+</head>
+<body>
+<div class="menu">
+    <div id="form" style="display:none">
+    </div>
+    <a href="/index.html">index</a>
+    <a href="/admin.html">admin.html</a>
+    <a href="/cars.html">cars</a>
+</div>
+<div class="menu-left">
+    <button onclick="save()">Save images</button>
+    <button onclick="window.location.pathname='/upload.html'">Upload</button>
+</div>
+<div class="table-right">
+    <div id="div"></div>
+</div>
+<!--<table id="table" class="table-right"></table>-->
+</body>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const uuid = urlParams.get("uuid");
+    console.log(uuid)
+    fetch("/getPhotosByUuid?uuid=" + uuid)
+        .then(r => r.json())
+        .then(list => {
+            list.forEach(e => {
+                document.querySelector("#div").innerHTML += `
+                    <div class="photo">
+                        <div onclick="window.location = '/imager.html?name=${e}&uuid=${uuid}'"><div>Edit</div></div>
+                        <img alt="${e}" src="thumb?name=${e}"/>
+                    </div>
+                `
+            })
+        })
+</script>
+<script src="admin.js"></script>
+</html>

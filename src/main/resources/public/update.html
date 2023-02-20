@@ -16,30 +16,15 @@
     <a href="/admin.html">admin.html</a>
     <a href="/cars.html">cars</a>
 </div>
-<div class="menu-left">
-    <button onclick="generate()">Generuj 40 testowych</button>
-    <hr style="padding: 0"/>
-    <button onclick="allInvoiceFilter()">faktura - wszystkie auta</button>
-    <div class="flex" id="allInvoiceFiltered"></div>
-    <hr style="padding: 0"/>
-    <button onclick="yearInvoiceFilter()">faktura - wszystkie auta z danego rocznika</button>
-    <input type="text" id="yearInvoiceFilter">
-    <div class="flex" id="yearInvoiceFiltered"></div>
-    <hr style="padding: 0"/>
-    <button onclick="priceInvoiceFilter()">faktura - wszystkie auta z zakresu cen</button>
-    <input type="text" id="priceInvoiceFilter1">
-    <input type="text" id="priceInvoiceFilter2">
-    <div class="flex" id="priceInvoiceFiltered"></div>
-</div>
 <table id="table" class="table-right"></table>
 </body>
 <script>
 
 
-    function generate() {
-        fetch("/generate").then(refresh)
-    }
 
+    function deleteOne(uuid) {
+        fetch("/delete/" + uuid).then(refresh)
+    }
     function edit(uuid) {
         const form = document.getElementById("form")
         fetch("/findOne?uuid=" + uuid)
@@ -69,6 +54,7 @@
     function refresh() {
         refreshInvoicesLinks()
         console.log("123")
+        document.getElementById("form").innerHTML = ""
         const table = document.getElementById("table")
         table.innerText = ""
         fetch("/json")
@@ -83,10 +69,8 @@
                         <td>${e.year}</td>
                         <td>${e.airbags.map(a => `${a.airbagType}: ${a.active}\n`)}</td>
                         <td><div style="background-color: ${e.color}; width: 15px; height: 15px"></div></td>
-                        <td>${!e.invoice ? `<button onClick="fetch('/invoice?uuid=${e.uuid}').then(refresh)">generuj fakturę</button>` : `<a href="${e.invoice}">pobierz fakturę</a>`}</td>
                         <td><button onClick="edit('${e.uuid}')">Edytuj</button></td>
-                        <td><a href="./upload.html?uuid=${e.uuid}">upload</a></td>
-                        <td><a href="./gallery.html?uuid=${e.uuid}">gallery</a></td>
+                        <td><button onClick="deleteOne('${e.uuid}')">Usuń</button></td>
                     `
                     table.appendChild(tr)
 

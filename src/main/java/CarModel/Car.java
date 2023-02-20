@@ -10,6 +10,10 @@ import static java.lang.Integer.parseInt;
 
 public class Car {
 
+    public double getPrice() {//    MOCK
+        return Helpers.randomPrize();
+    }
+
     public Car(String model, Integer year, ArrayList<Airbag> airbags, String color) {
         this.uuid = Helpers.randomUUID();
         this.model = model;
@@ -17,6 +21,7 @@ public class Car {
         this.airbags = airbags;
         this.color = color;
     }
+
     public String invoice = "";
 
     public String getInvoice() {
@@ -66,6 +71,19 @@ public class Car {
 
     private ArrayList<Airbag> airbags;
     private String color;
+    private final ArrayList<String> photosPaths = new ArrayList<>();
 
+
+    public ArrayList<String> getPhotosPaths() {
+        return photosPaths;
+    }
+
+    public void addPhotosPath(ArrayList<String> photosPaths) {
+        this.photosPaths.addAll(photosPaths);
+    }
+
+    public void addPhotosPath(String photosPath) {
+        photosPaths.add(photosPath);
+    }
 }
 
